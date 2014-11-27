@@ -7,21 +7,11 @@ import javax.persistence.*;
  */
 @Entity
     public class Blog {
-    private long id;
     private String language1;
     private String language2;
     private boolean nextVisited;
     private String url;
 
-    @Id
-    @Column(name = "id")
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     @Basic
     @Column(name = "language1")
@@ -53,7 +43,7 @@ import javax.persistence.*;
         this.nextVisited = nextVisited;
     }
 
-    @Basic
+    @Id
     @Column(name = "url")
     public String getUrl() {
         return url;
@@ -70,7 +60,7 @@ import javax.persistence.*;
 
         Blog that = (Blog) o;
 
-        if (id != that.id) return false;
+        if (url != that.url) return false;
         if (nextVisited != that.nextVisited) return false;
         if (language1 != null ? !language1.equals(that.language1) : that.language1 != null) return false;
         if (language2 != null ? !language2.equals(that.language2) : that.language2 != null) return false;
@@ -79,13 +69,4 @@ import javax.persistence.*;
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (language1 != null ? language1.hashCode() : 0);
-        result = 31 * result + (language2 != null ? language2.hashCode() : 0);
-        result = 31 * result + (nextVisited ? 1 : 0);
-        result = 31 * result + (url != null ? url.hashCode() : 0);
-        return result;
-    }
 }

@@ -9,15 +9,8 @@ import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
-import org.hibernate.Query;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -29,34 +22,29 @@ public class Crawl implements Runnable{
 
     Blog blog;
     private final static int NUM_OF_POSTS_TO_CHECK = 2;
-    @PersistenceContext
-    protected EntityManager em;
+    private static DAO DAO = null;
 
-    public Crawl(URLToVisit url,EntityManagerFactory factory){
 
-        this.em = factory.createEntityManager();
+    public Crawl(URLToVisit url){
+
+        DAO = DAO.getInstance();
+
         //create a new Blog entry with its url
         blog = new Blog();
         blog.setUrl(url.getUrl());
-        em.persist(blog);
 
         //remove that url so we won't read it again
-        em.getTransaction().begin();
-        javax.persistence.Query q = em.createQuery("delete URLToVisit where id = "+url.getId());
-        q.executeUpdate();
-        em.getTransaction().commit();
+        DAO.delete(url);
     }
 
 
     public void run() {
 
-        em.getTransaction().begin();
-
-
         //get the navbar HTML data
         String navbarData = getNavBarDataFromBlogUrl();
         if(navbarData != null) {
             String rssUrl = getFeedUrlFromBlogUrl(blog.getUrl());
+
             URLToVisit next = null;
 
             //get next blog and save
@@ -65,17 +53,13 @@ public class Crawl implements Runnable{
                 String nextBlog = getNextBlogFromNavBar(navbarData);
 
                 //check if that links already exists in the db
-                TypedQuery<URLToVisit> query = em.createQuery("SELECT urlToVisit FROM URLToVisit urlToVisit where url like :searchKeyword" , URLToVisit.class);
-                query.setParameter("searchKeyword",nextBlog);
-                List<URLToVisit> found = query.getResultList();
+                List<URLToVisit> found = DAO.getListOfURLToVisit(nextBlog);
                 //not found - save it
 
                 if (found.size() == 0) {
                     next = new URLToVisit();
                     next.setUrl(nextBlog);
-                    //em.getTransaction().begin();
-                    em.persist(next);
-                    em.getTransaction().commit();
+                    DAO.save(next);
                 }
 
                 //get the rss feed and save language data to this entry
@@ -91,10 +75,7 @@ public class Crawl implements Runnable{
             }
 
         }
-        em.getTransaction().begin();
-        em.persist(blog);
-        em.flush();
-        em.getTransaction().commit();
+        DAO.save(blog);
     }
 
     private String getFeedUrlFromBlogUrl(String url) {
@@ -103,6 +84,9 @@ public class Crawl implements Runnable{
 
         String feedLink = null;
         try {
+            //update the blog entry in db to the nice url
+            blog.setUrl("http://"+tempUrl.getHost());
+            //generate feed link
             feedLink = "http://" + tempUrl.getHost() + "/feeds/posts/default";
         } catch (URIException e) {
             e.printStackTrace();
@@ -197,9 +181,6 @@ public class Crawl implements Runnable{
         }
 
     }
-
-
-
 
 
 
@@ -477,8 +458,7 @@ public class Crawl implements Runnable{
         return newstr.toString();
     }
 
-    public final static
-    String uniplus(String s) {
+    public final static String uniplus(String s) {
         if (s.length() == 0) {
             return "";
         }
@@ -497,13 +477,11 @@ public class Crawl implements Runnable{
         return sb.toString();
     }
 
-    private static final
-    void die(String foa) {
+    private static final void die(String foa) {
         throw new IllegalArgumentException(foa);
     }
 
-    private static final
-    void say(String what) {
+    private static final void say(String what) {
         System.out.println(what);
     }
 
