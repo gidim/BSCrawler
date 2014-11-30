@@ -52,6 +52,7 @@ public class DAO {
     public void delete(Object obj){
         EntityManager em = factory.createEntityManager();
         em.remove(em.contains(obj) ? obj : em.merge(obj));
+        em.close();
     }
 
     public URLToVisit getURLToVisitByURL(String url){
@@ -69,7 +70,9 @@ public class DAO {
 
             EntityManager em = factory.createEntityManager();
             Query query = em.createQuery("SELECT urltovisit FROM URLToVisit urltovisit", URLToVisit.class).setMaxResults(limit);
-            return query.getResultList();
+            List results = query.getResultList();
+            em.close();
+            return results;
     }
 
     public List<URLToVisit> getListOfURLToVisit(String like){
@@ -78,6 +81,7 @@ public class DAO {
             TypedQuery<URLToVisit> query = em.createQuery("SELECT urlToVisit FROM URLToVisit urlToVisit where url like :searchKeyword" , URLToVisit.class);
             query.setParameter("searchKeyword",like);
             List<URLToVisit> found = query.getResultList();
+            em.close();
             return found;
 
     }
