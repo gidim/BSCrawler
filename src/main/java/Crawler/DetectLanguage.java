@@ -33,7 +33,7 @@ public abstract class DetectLanguage {
         tempFile = tempFile + String.valueOf(rand.nextInt(1000));
 
         String path = DetectLanguage.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        String decodedPath = URLDecoder.decode(path, "UTF-8").replace("/target/classes/","").replace("file:","").replace("target/BSCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar/langDetect.py","langDetect.py");
+        String decodedPath = URLDecoder.decode(path, "UTF-8").replace("/target/classes/","").replace("file:","").replace("/home/gm2597/crawler/BSCrawler/target/BSCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar/langDetect.py","langDetect.py");
 
         File script = new File(decodedPath+detectScript);
         if(!script.exists()){
