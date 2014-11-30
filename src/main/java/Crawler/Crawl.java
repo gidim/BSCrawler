@@ -39,43 +39,49 @@ public class Crawl implements Runnable{
 
 
     public void run() {
+        try {
 
-        //get the navbar HTML data
-        String navbarData = getNavBarDataFromBlogUrl();
-        if(navbarData != null) {
-            String rssUrl = getFeedUrlFromBlogUrl(blog.getUrl());
+            //get the navbar HTML data
+            String navbarData = getNavBarDataFromBlogUrl();
+            if (navbarData != null) {
+                String rssUrl = getFeedUrlFromBlogUrl(blog.getUrl());
 
-            URLToVisit next = null;
+                URLToVisit next = null;
 
-            //get next blog and save
-            try {
-                //get the link to the next blog in the ring
-                String nextBlog = getNextBlogFromNavBar(navbarData);
+                //get next blog and save
+                try {
+                    //get the link to the next blog in the ring
+                    String nextBlog = getNextBlogFromNavBar(navbarData);
 
-                //check if that links already exists in the db
-                List<URLToVisit> found = DAO.getListOfURLToVisit(nextBlog);
-                //not found - save it
+                    //check if that links already exists in the db
+                    List<URLToVisit> found = DAO.getListOfURLToVisit(nextBlog);
+                    //not found - save it
 
-                if (found.size() == 0) {
-                    next = new URLToVisit();
-                    next.setUrl(nextBlog);
-                    DAO.save(next);
+                    if (found.size() == 0) {
+                        next = new URLToVisit();
+                        next.setUrl(nextBlog);
+                        DAO.save(next);
+                    }
+
+                    //get the rss feed and save language data to this entry
+                    parseRssAndAddLanguagesToBlogEntry(rssUrl);
+
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (FeedException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-                //get the rss feed and save language data to this entry
-                parseRssAndAddLanguagesToBlogEntry(rssUrl);
-
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (FeedException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-
+            DAO.save(blog);
         }
-        DAO.save(blog);
+
+        catch (Exception e) {
+            System.out.println("Thread Failed:" + blog.getUrl());
+        }
     }
 
     private String getFeedUrlFromBlogUrl(String url) {
@@ -109,13 +115,13 @@ public class Crawl implements Runnable{
         Iterator itEntries = entries.iterator();
 
         int i = 0;
-        while(itEntries.hasNext() && i < NUM_OF_POSTS_TO_CHECK){
+        while (itEntries.hasNext() && i < NUM_OF_POSTS_TO_CHECK) {
 
             SyndEntry entry = (SyndEntry) itEntries.next();
             System.out.println("Title: " + entry.getTitle());
             System.out.println("Link: " + entry.getLink());
             System.out.println();
-            if(entry.getContents().size() > 0) {
+            if (entry.getContents().size() > 0) {
                 String content = entry.getContents().get(0).toString();
 
 

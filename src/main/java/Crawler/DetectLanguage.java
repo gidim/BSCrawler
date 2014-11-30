@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
+import java.util.Random;
 
 /**
  * This class is used to detect in which language a text is.
@@ -27,6 +28,9 @@ public abstract class DetectLanguage {
      * @throws Exception If can't find the python script
      */
     public static Result detect(final String text) throws Exception {
+
+        Random rand = new Random();
+        tempFile = tempFile + String.valueOf(rand.nextInt());
 
         String path = DetectLanguage.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         String decodedPath = URLDecoder.decode(path, "UTF-8").replace("/target/classes/","").replace("file:","");
