@@ -35,7 +35,7 @@ public class Crawl implements Runnable{
         blog.setUrl(url.getUrl());
 
         //remove that url so we won't read it again
-        DAO.delete(url);
+        //DAO.delete(url);
     }
 
 
