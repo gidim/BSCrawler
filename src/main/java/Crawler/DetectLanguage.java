@@ -32,7 +32,7 @@ public class DetectLanguage {
         Random rand = new Random();
         String fileLocation = tempFile + String.valueOf(id);
 
-
+g
         //String path = DetectLanguage.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         //String decodedPath = URLDecoder.decode(path, "UTF-8").replace("/target/classes/","").replace("file:","").replace("/home/gm2597/crawler/BSCrawler/target/BSCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar/langDetect.py","langDetect.py");
         String decodedPath = "/home/gm2597/crawler/BSCrawler/"; //production
