@@ -14,7 +14,7 @@ import java.util.Random;
  * It's a wrapper for a python script based on Google's compact language detector.
  *
  */
-public abstract class DetectLanguage {
+public class DetectLanguage {
     /** name of the python script file*/
     public static String detectScript = "/langDetect.py";
     /** a temp text file to store the string */
@@ -30,9 +30,10 @@ public abstract class DetectLanguage {
     public static Result detect(final String text, long id) throws Exception {
 
         Random rand = new Random();
-        tempFile = String.valueOf(id)+tempFile;
+        String fileLocation = tempFile + String.valueOf(id);
 
-        String path = DetectLanguage.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+g
+        //String path = DetectLanguage.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         //String decodedPath = URLDecoder.decode(path, "UTF-8").replace("/target/classes/","").replace("file:","").replace("/home/gm2597/crawler/BSCrawler/target/BSCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar/langDetect.py","langDetect.py");
         String decodedPath = "/home/gm2597/crawler/BSCrawler/"; //production
         File script = new File(decodedPath+detectScript);
@@ -40,10 +41,9 @@ public abstract class DetectLanguage {
             throw new Exception("Cannot find langDetect.py at: "+decodedPath+detectScript);
         }
 
-
         String lang;
         boolean isReliable;
-        File tempFileHandler = new File(tempFile);
+        File tempFileHandler = new File(fileLocation);
 
         //write string to file
         try {

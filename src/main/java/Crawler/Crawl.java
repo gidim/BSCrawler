@@ -123,6 +123,7 @@ public class Crawl implements Runnable{
             System.out.println();
             if (entry.getContents().size() > 0) {
                 String content = entry.getContents().get(0).toString();
+                content.replaceAll("SyndContentImpl.value=","").replaceAll("SyndContentImpl.interface=interface com.sun.syndication.feed.synd.SyndContent SyndContentImpl.type=html SyndContentImpl.mode=null","");
 
 
                 //try to clean content from HTML
