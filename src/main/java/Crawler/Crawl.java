@@ -130,7 +130,7 @@ public class Crawl implements Runnable{
 
                 try {
 
-                    Result result = DetectLanguage.detect(content);
+                    Result result = DetectLanguage.detect(content,Thread.currentThread().getId());
                     if (result.isReliable) {
 
                         if (blog.getLanguage1() == null) {

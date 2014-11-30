@@ -27,10 +27,10 @@ public abstract class DetectLanguage {
      * @return a Crawler.Result object with language and reliability
      * @throws Exception If can't find the python script
      */
-    public static Result detect(final String text) throws Exception {
+    public static Result detect(final String text, long id) throws Exception {
 
         Random rand = new Random();
-        tempFile = tempFile + String.valueOf(rand.nextInt(1000));
+        tempFile = String.valueOf(id)+tempFile;
 
         String path = DetectLanguage.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         //String decodedPath = URLDecoder.decode(path, "UTF-8").replace("/target/classes/","").replace("file:","").replace("/home/gm2597/crawler/BSCrawler/target/BSCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar/langDetect.py","langDetect.py");
