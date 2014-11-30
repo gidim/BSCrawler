@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Main {
 
-    private static final int NTHREDS = 100;
+    private static final int NTHREDS = 30;
     private static DAO DAO = null;
 
 
