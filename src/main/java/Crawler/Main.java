@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Main {
 
-    private static final int NTHREDS = 40;
+    private static final int NTHREDS = 100;
     private static DAO DAO = null;
 
 
@@ -35,8 +35,8 @@ public class Main {
 
                 for (URLToVisit url : urlQueue) {
                     Runnable worker = new Crawl(url);
-                    executor.execute(worker);
-                    //worker.run(); //testing only!
+                    //executor.execute(worker);
+                    worker.run(); //testing only!
                 }
 
                 //refill the queue

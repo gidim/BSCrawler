@@ -2,6 +2,7 @@ package Crawler; /**
  * Created by Gideon on 11/24/14.
  */
 
+import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
@@ -122,9 +123,8 @@ public class Crawl implements Runnable{
             System.out.println("Link: " + entry.getLink());
             System.out.println();
             if (entry.getContents().size() > 0) {
-                String content = entry.getContents().get(0).toString();
-                content.replaceAll("SyndContentImpl.value=","").replaceAll("SyndContentImpl.interface=interface com.sun.syndication.feed.synd.SyndContent SyndContentImpl.type=html SyndContentImpl.mode=null","");
-
+                SyndContentImpl tempCont = (SyndContentImpl)entry.getContents().get(0);
+                String content =  tempCont.getValue();
 
                 //try to clean content from HTML
                 content = Jsoup.parse(content).text();
