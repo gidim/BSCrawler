@@ -2,6 +2,7 @@ package Crawler;
 
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Main {
 
-    private static final int NTHREDS = 15;
+    private static final int NTHREDS = 40;
     private static DAO DAO = null;
 
 
