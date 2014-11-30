@@ -2,7 +2,6 @@ package Crawler;
 
 
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +29,7 @@ public class Main {
         //queue of links waiting for inspection
         List<URLToVisit> urlQueue;
 
-        urlQueue = DAO.getListOfURLToVisit(15);
+        urlQueue = DAO.dequeueListOfURLToVisit(15);
         while (!urlQueue.isEmpty()) {
 
                 for (URLToVisit url : urlQueue) {
@@ -40,7 +39,7 @@ public class Main {
                 }
 
                 //refill the queue
-            urlQueue = DAO.getListOfURLToVisit(15);
+            urlQueue = DAO.dequeueListOfURLToVisit(15);
         }
 
         executor.shutdown();

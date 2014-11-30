@@ -9,7 +9,6 @@ import javax.persistence.*;
     public class Blog {
     private String language1;
     private String language2;
-    private boolean nextVisited;
     private String url;
 
 
@@ -33,16 +32,6 @@ import javax.persistence.*;
         this.language2 = language2;
     }
 
-    @Basic
-    @Column(name = "nextVisited")
-    public boolean isNextVisited() {
-        return nextVisited;
-    }
-
-    public void setNextVisited(boolean nextVisited) {
-        this.nextVisited = nextVisited;
-    }
-
     @Id
     @Column(name = "url")
     public String getUrl() {
@@ -61,7 +50,6 @@ import javax.persistence.*;
         Blog that = (Blog) o;
 
         if (url != that.url) return false;
-        if (nextVisited != that.nextVisited) return false;
         if (language1 != null ? !language1.equals(that.language1) : that.language1 != null) return false;
         if (language2 != null ? !language2.equals(that.language2) : that.language2 != null) return false;
         if (url != null ? !url.equals(that.url) : that.url != null) return false;
