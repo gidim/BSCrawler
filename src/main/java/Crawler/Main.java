@@ -18,12 +18,14 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(NTHREDS);
         DAO = DAO.getInstance();
+        boolean testing = false;
 
         //TESTING
-        URLToVisit newTestBlog = new URLToVisit();
-        newTestBlog.setUrl("http://nyconcertmeister.blogspot.com/");
-        DAO.save(newTestBlog);
-
+        if(testing) {
+            URLToVisit newTestBlog = new URLToVisit();
+            newTestBlog.setUrl("http://nyconcertmeister.blogspot.com/");
+            DAO.save(newTestBlog);
+        }
         int numOfPages = 0;
 
         //queue of links waiting for inspection
@@ -34,8 +36,12 @@ public class Main {
 
                 for (URLToVisit url : urlQueue) {
                     Runnable worker = new Crawl(url);
-                    //executor.execute(worker);
-                    worker.run(); //testing only!
+                    if(!testing) {
+                        executor.execute(worker);
+                    }
+                    else {
+                        worker.run(); //testing only!
+                    }
                 }
 
                 //refill the queue
