@@ -69,6 +69,10 @@ public class DetectLanguage {
 
         //read return value
         // lang: %s ,reliable: isRealiable@' % detectedLangName)
+
+        System.out.println(text);
+        System.out.println(ret);
+
         lang = ret.substring(8, ret.indexOf(',')-1);
         int scoreInt = Integer.parseInt(ret.substring(ret.indexOf("reliable:")+"reliable:".length()+1, ret.length()));
         if(scoreInt == 1)
