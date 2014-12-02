@@ -18,7 +18,7 @@ public class DetectLanguage {
     /** name of the python script file*/
     public static String detectScript = "/langDetect.py";
     /** a temp text file to store the string */
-    public static String tempFile = "tempFile.txt";
+    public static String tempFile = "tempFile";
 
 
     /**
@@ -30,12 +30,13 @@ public class DetectLanguage {
     public static Result detect(final String text, long id) throws Exception {
 
         Random rand = new Random();
-        String fileLocation = tempFile + String.valueOf(id);
+        String fileLocation = tempFile + String.valueOf(id)+".txt";
 
 
-        //String path = DetectLanguage.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        //String decodedPath = URLDecoder.decode(path, "UTF-8").replace("/target/classes/","").replace("file:","").replace("/home/gm2597/crawler/BSCrawler/target/BSCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar/langDetect.py","langDetect.py");
-        String decodedPath = "/home/gm2597/crawler/BSCrawler/"; //production
+        String path = DetectLanguage.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath = URLDecoder.decode(path, "UTF-8").replace("/target/classes/","").replace("file:","").replace("/home/gm2597/crawler/BSCrawler/target/BSCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar/langDetect.py","langDetect.py");
+        //String decodedPath = "/home/gm2597/crawler/BSCrawler/"; //production
+        System.out.println("Script path: "+decodedPath+detectScript);
         File script = new File(decodedPath+detectScript);
         if(!script.exists()){
             throw new Exception("Cannot find langDetect.py at: "+decodedPath+detectScript);
@@ -69,10 +70,6 @@ public class DetectLanguage {
 
         //read return value
         // lang: %s ,reliable: isRealiable@' % detectedLangName)
-
-        System.out.println(text);
-        System.out.println(ret);
-
         lang = ret.substring(8, ret.indexOf(',')-1);
         int scoreInt = Integer.parseInt(ret.substring(ret.indexOf("reliable:")+"reliable:".length()+1, ret.length()));
         if(scoreInt == 1)
