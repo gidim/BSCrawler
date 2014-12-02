@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(NTHREDS);
         DAO = DAO.getInstance();
-        boolean testing = true;
+        boolean testing = false;
 
         //TESTING
         if(testing) {
