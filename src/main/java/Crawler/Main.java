@@ -1,9 +1,11 @@
 package Crawler;
 
 
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.params.HttpParams;
 
 import java.net.URL;
 import java.util.Iterator;
@@ -18,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     private static final int NTHREDS = 30;
+    private static final int TIMEOUT = 10;
     private static DAO DAO = null;
 
 
@@ -28,12 +31,16 @@ public class Main {
         boolean testing = false;
 
         // Create an HttpClient with the ThreadSafeClientConnManager.
-        // This connection manager must be used if more than one thread will
-        // be using the HttpClient.
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         cm.setMaxTotal(NTHREDS+1);
+        RequestConfig config = RequestConfig.custom()
+                .setSocketTimeout(TIMEOUT * 1000)
+                .setConnectTimeout(TIMEOUT * 1000)
+                .setConnectionRequestTimeout(TIMEOUT * 1000)
+                .build();
         CloseableHttpClient httpclient = HttpClients.custom()
                 .setConnectionManager(cm)
+                .setDefaultRequestConfig(config)
                 .build();
 
 
