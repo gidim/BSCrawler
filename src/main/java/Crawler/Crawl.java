@@ -8,13 +8,16 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
+import javax.print.URIException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
@@ -24,12 +27,14 @@ public class Crawl implements Runnable{
     Blog blog;
     private final static int NUM_OF_POSTS_TO_CHECK = 2;
     private static DAO DAO = null;
+    CloseableHttpClient httpClient;
 
+    //        public GetThread(CloseableHttpClient httpClient, HttpGet httpget, int id) {
 
-    public Crawl(URLToVisit url){
+    public Crawl(URLToVisit url, CloseableHttpClient httpClient){
 
         DAO = DAO.getInstance();
-
+        this.httpClient = httpClient;
         //create a new Blog entry with its url
         blog = new Blog();
         blog.setUrl(url.getUrl());
@@ -87,18 +92,16 @@ public class Crawl implements Runnable{
     }
 
     private String getFeedUrlFromBlogUrl(String url) {
-        MyHTTPClient hc = new MyHTTPClient(url);
+        MyHTTPClient hc = new MyHTTPClient(httpClient,url);
         URI tempUrl = hc.getFinalURL();
 
         String feedLink = null;
-        try {
+
             //update the blog entry in db to the nice url
             blog.setUrl("http://"+tempUrl.getHost());
             //generate feed link
             feedLink = "http://" + tempUrl.getHost() + "/feeds/posts/default";
-        } catch (URIException e) {
-            e.printStackTrace();
-        }
+
 
         return feedLink;
     }
@@ -167,7 +170,7 @@ public class Crawl implements Runnable{
     private String getNavBarDataFromBlogUrl(){
 
 
-        MyHTTPClient hc = new MyHTTPClient(blog.getUrl());
+        MyHTTPClient hc = new MyHTTPClient(httpClient,blog.getUrl());
         String html = hc.getHTMLData();
         try {
             String navBarUrl = html.substring(html.indexOf("https://www.blogger.com/navbar.g"), html.indexOf("where: document.getElementById"));
@@ -179,7 +182,7 @@ public class Crawl implements Runnable{
 
 
             //get the navbar
-            hc = new MyHTTPClient(navBarUrl);
+            hc = new MyHTTPClient(httpClient,navBarUrl);
             String navBarData = hc.getHTMLData();
             return navBarData;
 

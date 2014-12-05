@@ -1,6 +1,10 @@
 package Crawler;
 
 
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -18,9 +22,19 @@ public class Main {
 
 
     public static void main(String[] args) throws InterruptedException {
+        //setup main thread pool
         ExecutorService executor = Executors.newFixedThreadPool(NTHREDS);
         DAO = DAO.getInstance();
         boolean testing = false;
+
+        // Create an HttpClient with the ThreadSafeClientConnManager.
+        // This connection manager must be used if more than one thread will
+        // be using the HttpClient.
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+        cm.setMaxTotal(NTHREDS+1);
+        CloseableHttpClient httpclient = HttpClients.custom()
+                .setConnectionManager(cm)
+                .build();
 
 
 
@@ -41,7 +55,7 @@ public class Main {
             Iterator <URLToVisit> it = urlQueue.iterator();
             while(it.hasNext()){
                 URLToVisit url = it.next();
-                    Runnable worker = new Crawl(url);
+                    Runnable worker = new Crawl(url,httpclient);
 
                     if(!testing) {
                         executor.execute(worker);

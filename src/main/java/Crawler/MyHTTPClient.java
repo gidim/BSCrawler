@@ -1,13 +1,22 @@
 package Crawler;
 
-import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.methods.*;
-import org.apache.commons.httpclient.params.*;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultRedirectStrategy;
+import org.apache.http.impl.client.RedirectLocations;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import sun.management.AgentConfigurationError;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URI;
+import java.nio.charset.Charset;
 
 
 /**
@@ -16,16 +25,68 @@ import java.io.PrintStream;
  */
 
 
+
 public class MyHTTPClient {
 
     /** a string to hold the data received in the response */
     private String HTMLData;
     private URI finalURL;
+    private  CloseableHttpClient httpClient;
+    private  HttpContext context;
+    private  HttpGet httpget;
+
+
+    public MyHTTPClient(CloseableHttpClient httpClient, String url) {
+        this.httpget = new HttpGet(url);
+        this.httpClient = httpClient;
+        this.context = new BasicHttpContext();
+
+
+        fetch();
+    }
+
+    //todo: implement pool for client, get last URI, check
+
+    /**
+     * Executes the GetMethod and prints some status information.
+     */
+
+
+
+    public void fetch() {
+        try {
+            System.out.println("HTTP Request:  " + httpget.getURI());
+            CloseableHttpResponse response = httpClient.execute(httpget, context);
+            try {
+                // get the response body as an array of bytes
+                HttpEntity entity = response.getEntity();
+                finalURL = httpget.getURI();
+                RedirectLocations locations = (RedirectLocations) context.getAttribute(DefaultRedirectStrategy.REDIRECT_LOCATIONS);
+                if (locations != null) {
+                    finalURL = locations.getAll().get(locations.getAll().size() - 1);
+                }
+
+                if (entity != null) {
+                    HTMLData = EntityUtils.toString(entity, Charset.defaultCharset());
+                }
+            } finally {
+                response.close();
+            }
+        } catch (Exception e) {
+            System.out.println(" - error: " + e);
+        }
+    }
+
+
+
+
+
 
     /**
      * generates a apache.commons.httpclient and makes the request to the url
      * @param url url to fetch
      */
+    /*
     public MyHTTPClient(String url) {
 
         //set timeout
@@ -82,7 +143,7 @@ public class MyHTTPClient {
         }
 
     }
-
+*/
     /**
      *
      * @return the html data saved by the constructur
