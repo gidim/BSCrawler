@@ -82,6 +82,7 @@ public class Crawl implements Runnable{
 
         catch (Exception e) {
             System.out.println("Thread Failed:" + blog.getUrl());
+            System.out.println(e);
         }
     }
 

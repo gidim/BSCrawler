@@ -43,6 +43,7 @@ public class DAO {
             em.persist(obj);
             em.getTransaction().commit();
             em.close();
+            System.out.println("Saved:" +obj);
         }
 
         catch (javax.persistence.RollbackException Ex){

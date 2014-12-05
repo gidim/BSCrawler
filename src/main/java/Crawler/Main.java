@@ -1,6 +1,8 @@
 package Crawler;
 
 
+import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,6 +22,8 @@ public class Main {
         DAO = DAO.getInstance();
         boolean testing = false;
 
+
+
         //TESTING
         if(testing) {
             URLToVisit newTestBlog = new URLToVisit();
@@ -31,21 +35,31 @@ public class Main {
         //queue of links waiting for inspection
         List<URLToVisit> urlQueue;
 
-        urlQueue = DAO.dequeueListOfURLToVisit(15);
+        urlQueue = DAO.dequeueListOfURLToVisit(150);
         while (!urlQueue.isEmpty()) {
 
-                for (URLToVisit url : urlQueue) {
+            Iterator <URLToVisit> it = urlQueue.iterator();
+            while(it.hasNext()){
+                URLToVisit url = it.next();
                     Runnable worker = new Crawl(url);
+
                     if(!testing) {
                         executor.execute(worker);
                     }
                     else {
                         worker.run(); //testing only!
                     }
+                it.remove();
                 }
 
-                //refill the queue
-            urlQueue = DAO.dequeueListOfURLToVisit(15);
+
+
+            Thread.sleep(1000);
+
+            //refill the queue
+            if(urlQueue.size() < 10) {
+                urlQueue = DAO.dequeueListOfURLToVisit(15);
+            }
         }
 
         executor.shutdown();

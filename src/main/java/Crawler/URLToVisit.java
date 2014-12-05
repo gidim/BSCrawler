@@ -32,5 +32,10 @@ public class URLToVisit {
         return true;
     }
 
-
+    @Override
+    public String toString() {
+        return "URLToVisit{" +
+                "url='" + url + '\'' +
+                '}';
+    }
 }

@@ -57,4 +57,12 @@ import javax.persistence.*;
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Blog{" +
+                "language1='" + language1 + '\'' +
+                ", language2='" + language2 + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }

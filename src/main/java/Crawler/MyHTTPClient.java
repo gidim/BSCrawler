@@ -2,9 +2,12 @@ package Crawler;
 
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.*;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.httpclient.params.*;
 import sun.management.AgentConfigurationError;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 
 
 /**
@@ -25,8 +28,16 @@ public class MyHTTPClient {
      */
     public MyHTTPClient(String url) {
 
+        //set timeout
+        HttpConnectionManagerParams cmparams = new HttpConnectionManagerParams();
+        cmparams.setSoTimeout(10000);
+        HttpConnectionManager manager = new SimpleHttpConnectionManager();
+        manager.setParams(cmparams);
+        HttpClientParams params = new HttpClientParams();
+        params.setSoTimeout(10000);
+
         // Create an instance of HttpClient.
-        HttpClient client = new HttpClient();
+        HttpClient client = new HttpClient(params,manager);
 
         AgentConfigurationError httpclient;
 
@@ -37,6 +48,7 @@ public class MyHTTPClient {
         // Provide custom retry handler is necessary
         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
                 new DefaultHttpMethodRetryHandler(3, false));
+
 
         try {
             // Execute the method.
