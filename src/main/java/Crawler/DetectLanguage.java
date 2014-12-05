@@ -16,7 +16,7 @@ import java.util.Random;
  */
 public class DetectLanguage {
     /** name of the python script file*/
-    public static String detectScript = "/langDetect.py";
+    public static String detectScript = "langDetect.py";
     /** a temp text file to store the string */
     public static String tempFile = "tempFile";
 
@@ -30,13 +30,14 @@ public class DetectLanguage {
     public static Result detect(final String text, long id) throws Exception {
 
         Random rand = new Random();
-        String fileLocation = tempFile + String.valueOf(id)+".txt";
 
 
-        String path = DetectLanguage.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        String decodedPath = URLDecoder.decode(path, "UTF-8").replace("/target/classes/","").replace("file:","").replace("target/BSCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar/","");
-        //String decodedPath = "/home/gm2597/crawler/BSCrawler/"; //production
-        System.out.println("Script path: "+decodedPath+detectScript);
+        //String path = DetectLanguage.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        //String decodedPath = URLDecoder.decode(path, "UTF-8").replace("/target/classes/","").replace("file:","").replace("/home/gm2597/crawler/BSCrawler/target/BSCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar/langDetect.py","langDetect.py");
+        String decodedPath = "/home/gm2597/crawler/BSCrawler/"; //production
+        String fileLocation = decodedPath + tempFile + String.valueOf(id)+".txt";
+
+
         File script = new File(decodedPath+detectScript);
         if(!script.exists()){
             throw new Exception("Cannot find langDetect.py at: "+decodedPath+detectScript);
@@ -54,7 +55,8 @@ public class DetectLanguage {
         }
 
         //pass to python
-        ProcessBuilder pb = new ProcessBuilder("python", decodedPath+detectScript, tempFile);
+        System.out.println("running at: "+decodedPath+detectScript+" "+fileLocation);
+        ProcessBuilder pb = new ProcessBuilder("python", decodedPath+detectScript, fileLocation);
         Process p = null;
         String ret = null;
 
