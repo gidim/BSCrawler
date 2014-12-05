@@ -71,6 +71,7 @@ public class MyHTTPClient {
                 }
             } finally {
                 response.close();
+                System.out.println("Request Finished");
             }
         } catch (Exception e) {
             System.out.println(" - error: " + e);

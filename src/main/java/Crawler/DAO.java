@@ -10,6 +10,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.spi.PersistenceProvider;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,7 +45,8 @@ public class DAO {
             em.persist(obj);
             em.getTransaction().commit();
             em.close();
-            System.out.println("Saved:" +obj);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+            System.out.println(timeStamp + "Saved:" +obj);
         }
 
         catch (javax.persistence.RollbackException Ex){
