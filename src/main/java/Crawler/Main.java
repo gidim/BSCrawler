@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Main {
 
-    private static final int NTHREDS = 30;
+    private static final int NTHREDS = 40;
     private static final int TIMEOUT = 10;
     private static DAO DAO = null;
 
@@ -75,16 +75,19 @@ public class Main {
 
 
 
-            Thread.sleep(1000);
+            Thread.sleep(1000 * 60); // wait for a minute so the queue will fill up again
 
             //refill the queue
             if(urlQueue.size() < 10) {
-                urlQueue = DAO.dequeueListOfURLToVisit(15);
+                urlQueue = DAO.dequeueListOfURLToVisit(150);
             }
         }
 
+        System.out.println("Finished Submitting");
         executor.shutdown();
-        while(!executor.isTerminated());
+        while(!executor.isTerminated()){
+            System.out.println("Waiting for all threads to finish");
+        }
 
         executor.awaitTermination(10l, TimeUnit.MINUTES);
 

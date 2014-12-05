@@ -39,13 +39,12 @@ public class Crawl implements Runnable{
         blog = new Blog();
         blog.setUrl(url.getUrl());
 
-        //remove that url so we won't read it again
-        //DAO.delete(url);
     }
 
 
     public void run() {
         try {
+            System.out.print("Thread Started: "+ Thread.currentThread().getId());
 
             //get the navbar HTML data
             String navbarData = getNavBarDataFromBlogUrl();
@@ -88,6 +87,7 @@ public class Crawl implements Runnable{
         catch (Exception e) {
             System.out.println("Thread Failed:" + blog.getUrl());
             System.out.println(e);
+            return;
         }
     }
 
@@ -106,7 +106,7 @@ public class Crawl implements Runnable{
         return feedLink;
     }
 
-    private void parseRssAndAddLanguagesToBlogEntry(String feedURL) throws IOException, FeedException {
+    private void parseRssAndAddLanguagesToBlogEntry(String feedURL) throws Exception {
 
         URL url = new URL(feedURL);
 
@@ -133,7 +133,7 @@ public class Crawl implements Runnable{
                 //try to clean content from HTML
                 content = Jsoup.parse(content).text();
 
-                try {
+
 
                     Result result = DetectLanguage.detect(content,Thread.currentThread().getId());
                     if (result.isReliable) {
@@ -148,9 +148,6 @@ public class Crawl implements Runnable{
 
                     }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
             }
             i++;
@@ -192,10 +189,6 @@ public class Crawl implements Runnable{
         }
 
     }
-
-
-
-
 
     public static Map<String, List<String>> splitQuery(URL url) throws UnsupportedEncodingException {
         final Map<String, List<String>> query_pairs = new LinkedHashMap<String, List<String>>();
