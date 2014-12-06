@@ -44,9 +44,6 @@ public class Crawl implements Runnable{
 
     public void run() {
 
-        while(true);
-        /*
-
         try {
             System.out.print("Thread Started: "+ Thread.currentThread().getId());
 
@@ -93,7 +90,6 @@ public class Crawl implements Runnable{
             System.out.println(e);
             return;
         }
-        */
     }
 
     private String getFeedUrlFromBlogUrl(String url) {
