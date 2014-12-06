@@ -24,7 +24,7 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         //setup main thread pool with timeout
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(0, NTHREDS, TIMEOUT, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(1, NTHREDS, TIMEOUT, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 
         DAO = DAO.getInstance();
         boolean testing = false;
