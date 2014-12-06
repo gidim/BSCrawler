@@ -10,23 +10,22 @@ import org.apache.http.params.HttpParams;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Created by Gideon on 11/24/14.
  */
 public class Main {
 
-    private static final int NTHREDS = 40;
-    private static final int TIMEOUT = 10;
+    private static final int NTHREDS = 1;
+    private static final int TIMEOUT = 30;
     private static DAO DAO = null;
 
 
     public static void main(String[] args) throws InterruptedException {
-        //setup main thread pool
-        ExecutorService executor = Executors.newFixedThreadPool(NTHREDS);
+        //setup main thread pool with timeout
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(0, NTHREDS, TIMEOUT, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+
         DAO = DAO.getInstance();
         boolean testing = false;
 
@@ -42,8 +41,6 @@ public class Main {
                 .setConnectionManager(cm)
                 .setDefaultRequestConfig(config)
                 .build();
-
-
 
         //TESTING
         if(testing) {

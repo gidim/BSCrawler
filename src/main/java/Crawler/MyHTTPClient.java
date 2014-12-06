@@ -45,7 +45,6 @@ public class MyHTTPClient {
         fetch();
     }
 
-    //todo: implement pool for client, get last URI, check
 
     /**
      * Executes the GetMethod and prints some status information.
