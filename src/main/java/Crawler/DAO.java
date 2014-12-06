@@ -39,18 +39,30 @@ public class DAO {
 
     public void save(Object obj){
 
-        try {
-            EntityManager em = factory.createEntityManager();
-            em.getTransaction().begin();
-            em.persist(obj);
-            em.getTransaction().commit();
-            em.close();
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-            System.out.println(timeStamp + "Saved:" +obj);
+        boolean exists = false;
+        if(obj instanceof Blog){
+            Blog b = getBlogByURL(((Blog) obj).getUrl());
+            if(b!= null)
+                exists =true;
+        }
+        if(obj instanceof URLToVisit){
+            URLToVisit b = getURLToVisitByURL(((URLToVisit) obj).getUrl());
+            if(b!= null)
+                exists =true;
         }
 
-        catch (javax.persistence.RollbackException Ex){
-            return;
+        if(!exists) {
+            try {
+                EntityManager em = factory.createEntityManager();
+                em.getTransaction().begin();
+                em.persist(obj);
+                em.getTransaction().commit();
+                em.close();
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                System.out.println(timeStamp + "Saved:" + obj);
+            } catch (javax.persistence.RollbackException Ex) {
+                return;
+            }
         }
     }
 
@@ -85,6 +97,16 @@ public class DAO {
         return ret;
     }
 
+
+    public Blog getBlogByURL(String url){
+        Blog ret = null;
+        EntityManager em = factory.createEntityManager();
+        Session session = em.unwrap(Session.class);
+        session.beginTransaction();
+        ret = (Blog) session.get(Blog.class,url);
+        session.close();
+        return ret;
+    }
 
     public List<URLToVisit> dequeueListOfURLToVisit(int limit){
 
